@@ -2,10 +2,9 @@
 ## from OnePlus Nord (AC2003_11_F.24).
 
 # OnePlus Camera
-system_ext/priv-app/OnePlusCamera/OnePlusCamera.apk;OVERRIDES=Aperture,Camera2
-system_ext/etc/permissions/com.oneplus.camera.xml
+my_product/priv-app/OnePlusCamera/OnePlusCamera.apk:system_ext/priv-app/OnePlusCamera/OnePlusCamera.apk;OVERRIDES=Aperture,Camera2
+my_product/etc/permissions/com.oneplus.camera.xml:system_ext/etc/permissions/com.oneplus.camera.xml
 
 # OnePlus Camera Service
-system/priv-app/OnePlusCameraService/OnePlusCameraService.apk
-system/etc/permissions/com.oneplus.camera.service.xml
-system/etc/sysconfig/hiddenapi-whitelist-oplus.xml
+my_product/priv-app/OnePlusCameraService/OnePlusCameraService.apk:system/priv-app/OnePlusCameraService/OnePlusCameraService.apk
+my_product/etc/permissions/com.oneplus.camera.service.xml:system/etc/permissions/com.oneplus.camera.service.xml

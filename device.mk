@@ -11,6 +11,10 @@ PRODUCT_PACKAGES += \
     libcamera2ndk_vendor \
     libstdc++_vendor
 
+# Hidden API
+PRODUCT_COPY_FILES += \
+    $(CAMERA_PATH)/configs/hiddenapi-whitelist-oplus.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/hiddenapi-whitelist-oplus.xml
+
 # Init
 PRODUCT_COPY_FILES += \
     $(CAMERA_PATH)/init/init.oneplus.camera.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.oneplus.camera.rc
