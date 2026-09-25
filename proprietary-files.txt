@@ -1,0 +1,8 @@
+# OnePlus Camera
+system_ext/priv-app/OnePlusCamera/OnePlusCamera.apk;OVERRIDES=Aperture,Camera2
+system_ext/etc/permissions/com.oneplus.camera.xml
+
+# OnePlus Camera Service
+system/priv-app/OnePlusCameraService/OnePlusCameraService.apk
+system/etc/permissions/com.oneplus.camera.service.xml
+system/etc/sysconfig/hiddenapi-whitelist-oplus.xml
