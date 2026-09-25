@@ -14,6 +14,8 @@ from extract_utils.main import (
 )
 
 blob_fixups: blob_fixups_user_type = {
+    'system_ext/priv-app/OnePlusCamera/OnePlusCamera.apk': blob_fixup()
+        .apktool_patch('blob-patches'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(

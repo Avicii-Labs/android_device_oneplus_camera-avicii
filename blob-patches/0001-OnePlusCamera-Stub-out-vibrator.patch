@@ -1,0 +1,231 @@
+From 559a8ee552d54aa54c5345c912791c7cec475d36 Mon Sep 17 00:00:00 2001
+From: lostsignal-502 <viaan0228@gmail.com>
+Date: Fri, 25 Sep 2026 14:30:47 +0000
+Subject: [PATCH] OnePlusCamera: Stub out vibrator
+
+The app casts the result of getSystemService() to
+com.oplus.os.LinearmotorVibrator, which does not exist on AOSP and
+crashes the app on any haptic feedback (e.g. opening the filter panel).
+---
+ .../com/oneplus/util/Vibrator$Companion.smali | 203 +-----------------
+ 1 file changed, 3 insertions(+), 200 deletions(-)
+
+diff --git a/smali_classes2/com/oneplus/util/Vibrator$Companion.smali b/smali_classes2/com/oneplus/util/Vibrator$Companion.smali
+index 137e8a9..9d47bdf 100644
+--- a/smali_classes2/com/oneplus/util/Vibrator$Companion.smali
++++ b/smali_classes2/com/oneplus/util/Vibrator$Companion.smali
+@@ -996,211 +996,14 @@
+ .end method
+ 
+ .method public final vibrate(Landroid/content/Context;II)Z
+-    .locals 4
++    .locals 1
+     .annotation runtime Lcom/oneplus/base/AccessOnDependencyThread;
+     .end annotation
+ 
+     .annotation runtime Lkotlin/jvm/JvmStatic;
+     .end annotation
+ 
+-    const-string v0, "context"
+-
+-    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->checkParameterIsNotNull(Ljava/lang/Object;Ljava/lang/String;)V
+-
+-    .line 181
+-    check-cast p0, Lcom/oneplus/util/Vibrator$Companion;
+-
+-    invoke-direct {p0}, Lcom/oneplus/util/Vibrator$Companion;->verifyAccess()V
+-
+-    .line 183
+-    invoke-static {}, Lcom/oneplus/base/Device;->isXAxisVibrationSupported()Z
+-
+-    move-result v0
+-
+-    const/4 v1, 0x0
+-
+-    if-nez v0, :cond_0
+-
+-    invoke-static {}, Lcom/oneplus/base/Device;->isSupportedOS1()Z
+-
+-    move-result v0
+-
+-    if-nez v0, :cond_0
+-
+-    return v1
+-
+-    .line 186
+-    :cond_0
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$getDisableVibratorHandles$cp()Ljava/util/List;
+-
+-    move-result-object v0
+-
+-    check-cast v0, Ljava/util/Collection;
+-
+-    invoke-interface {v0}, Ljava/util/Collection;->isEmpty()Z
+-
+-    move-result v0
+-
+-    const/4 v2, 0x1
+-
+-    xor-int/2addr v0, v2
+-
+-    const-string v3, "Vibrator"
+-
+-    if-eqz v0, :cond_1
+-
+-    and-int/2addr p3, v2
+-
+-    if-nez p3, :cond_1
+-
+-    const-string p0, "vibrate() - Vibration is disabled"
+-
+-    .line 188
+-    invoke-static {v3, p0}, Lcom/oneplus/base/Log;->w(Ljava/lang/String;Ljava/lang/String;)V
+-
+-    return v1
+-
+-    .line 192
+-    :cond_1
+-    new-instance p3, Ljava/lang/StringBuilder;
+-
+-    invoke-direct {p3}, Ljava/lang/StringBuilder;-><init>()V
+-
+-    const-string v0, "vibrate: "
+-
+-    invoke-virtual {p3, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-
+-    move-result-object p3
+-
+-    invoke-virtual {p3, p2}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+-
+-    move-result-object p3
+-
+-    invoke-virtual {p3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+-
+-    move-result-object p3
+-
+-    invoke-static {v3, p3}, Lcom/oneplus/base/Log;->d(Ljava/lang/String;Ljava/lang/String;)V
+-
+-    .line 194
+-    invoke-static {}, Lcom/oneplus/base/Device;->isSupportedOS1()Z
+-
+-    move-result p3
+-
+-    const-string v0, "context.applicationContext"
+-
+-    if-eqz p3, :cond_4
+-
+-    .line 196
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$isInit$cp()Z
+-
+-    move-result p3
+-
+-    if-nez p3, :cond_2
+-
+-    .line 198
+-    invoke-virtual {p1}, Landroid/content/Context;->getApplicationContext()Landroid/content/Context;
+-
+-    move-result-object p1
+-
+-    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->checkExpressionValueIsNotNull(Ljava/lang/Object;Ljava/lang/String;)V
+-
+-    invoke-direct {p0, p1}, Lcom/oneplus/util/Vibrator$Companion;->initForSupportedOS1(Landroid/content/Context;)V
+-
+-    .line 200
+-    :cond_2
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$getVibrationEnable$cp()I
+-
+-    move-result p1
+-
+-    if-eq p1, v2, :cond_3
+-
+-    return v1
+-
+-    .line 204
+-    :cond_3
+-    invoke-static {}, Landroid/os/SystemClock;->elapsedRealtime()J
+-
+-    move-result-wide v0
+-
+-    .line 205
+-    invoke-direct {p0}, Lcom/oneplus/util/Vibrator$Companion;->getVibrationThread()Lcom/oneplus/base/HandlerThread;
+-
+-    move-result-object p0
+-
+-    invoke-virtual {p0}, Lcom/oneplus/base/HandlerThread;->getDispatcher()Lcom/oneplus/threading/Dispatcher;
+-
+-    move-result-object p0
+-
+-    new-instance p1, Lcom/oneplus/util/Vibrator$Companion$vibrate$1;
+-
+-    invoke-direct {p1, v0, v1, p2}, Lcom/oneplus/util/Vibrator$Companion$vibrate$1;-><init>(JI)V
+-
+-    check-cast p1, Lkotlin/jvm/functions/Function0;
+-
+-    invoke-virtual {p0, p1}, Lcom/oneplus/threading/Dispatcher;->post(Lkotlin/jvm/functions/Function0;)J
+-
+-    return v2
+-
+-    .line 218
+-    :cond_4
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$isInit$cp()Z
+-
+-    move-result p3
+-
+-    if-nez p3, :cond_5
+-
+-    .line 220
+-    invoke-virtual {p1}, Landroid/content/Context;->getApplicationContext()Landroid/content/Context;
+-
+-    move-result-object p1
+-
+-    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;->checkExpressionValueIsNotNull(Ljava/lang/Object;Ljava/lang/String;)V
+-
+-    invoke-direct {p0, p1}, Lcom/oneplus/util/Vibrator$Companion;->init(Landroid/content/Context;)V
+-
+-    .line 222
+-    :cond_5
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$getHasVibratorEffect$cp()Z
+-
+-    move-result p1
+-
+-    if-nez p1, :cond_6
+-
+-    return v1
+-
+-    .line 226
+-    :cond_6
+-    invoke-static {}, Lcom/oneplus/util/Vibrator;->access$getVibrationEnable$cp()I
+-
+-    move-result p1
+-
+-    if-eq p1, v2, :cond_7
+-
+-    return v1
+-
+-    .line 231
+-    :cond_7
+-    invoke-static {}, Landroid/os/SystemClock;->elapsedRealtime()J
+-
+-    move-result-wide v0
+-
+-    .line 232
+-    invoke-direct {p0}, Lcom/oneplus/util/Vibrator$Companion;->getVibrationThread()Lcom/oneplus/base/HandlerThread;
+-
+-    move-result-object p0
+-
+-    invoke-virtual {p0}, Lcom/oneplus/base/HandlerThread;->getDispatcher()Lcom/oneplus/threading/Dispatcher;
+-
+-    move-result-object p0
+-
+-    new-instance p1, Lcom/oneplus/util/Vibrator$Companion$vibrate$2;
+-
+-    invoke-direct {p1, v0, v1, p2}, Lcom/oneplus/util/Vibrator$Companion$vibrate$2;-><init>(JI)V
+-
+-    check-cast p1, Lkotlin/jvm/functions/Function0;
+-
+-    invoke-virtual {p0, p1}, Lcom/oneplus/threading/Dispatcher;->post(Lkotlin/jvm/functions/Function0;)J
++    const/4 v0, 0x0
+ 
+-    return v2
++    return v0
+ .end method
