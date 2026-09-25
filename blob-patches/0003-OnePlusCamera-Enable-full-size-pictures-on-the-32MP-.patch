@@ -1,0 +1,101 @@
+From c63e063060c5dbe7a596c7cb8d93349350fcda90 Mon Sep 17 00:00:00 2001
+From: lostsignal-502 <viaan4542@gmail.com>
+Date: Fri, 25 Sep 2026 16:17:26 +0000
+Subject: [PATCH] OnePlusCamera: Enable full size pictures on the 32MP front
+ camera
+
+The HAL doesn't publish ProFullInfo for the front QCFA sensor, so the
+app never creates its full picture size camera and the front camera is
+stuck at the binned 3280x2464 resolution.
+
+Fall back to twice the active array size for cameras that advertise
+IsJPEGUpscale2x2Supported, which gives the front sensor its 6560x4928
+remosaic size and restores 32MP selfies by default.
+---
+ .../OPFullPictureSizeCameraImpl$Builder.smali | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+
+diff --git a/smali/com/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl$Builder.smali b/smali/com/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl$Builder.smali
+index 3ce032f9..9e3fb078 100644
+--- a/smali/com/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl$Builder.smali
++++ b/smali/com/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl$Builder.smali
+@@ -261,6 +261,79 @@
+     return-object p1
+ 
+     :cond_3
++    invoke-interface {p0}, Lcom/oneplus/camera/next/hardware/camera2/Camera2;->getCharacteristics()Landroid/hardware/camera2/CameraCharacteristics;
++
++    move-result-object p1
++
++    invoke-static {}, Lcom/oneplus/camera/hardware/camera2/wrappers/OPJpegUpscaleCameraImpl;->access$getKEY_IS_JPEG_UPSCALE_SUPPORTED$cp()Landroid/hardware/camera2/CameraCharacteristics$Key;
++
++    move-result-object v1
++
++    const/4 v3, 0x0
++
++    invoke-static {v3}, Ljava/lang/Byte;->valueOf(B)Ljava/lang/Byte;
++
++    move-result-object v3
++
++    invoke-static {p1, v1, v3}, Lcom/oneplus/camera/next/hardware/camera2/Camera2Kt;->get(Landroid/hardware/camera2/CameraCharacteristics;Landroid/hardware/camera2/CameraCharacteristics$Key;Ljava/lang/Object;)Ljava/lang/Object;
++
++    move-result-object v1
++
++    check-cast v1, Ljava/lang/Number;
++
++    invoke-virtual {v1}, Ljava/lang/Number;->byteValue()B
++
++    move-result v1
++
++    const/4 v3, 0x1
++
++    if-ne v1, v3, :cond_4
++
++    sget-object v1, Landroid/hardware/camera2/CameraCharacteristics;->SENSOR_INFO_ACTIVE_ARRAY_SIZE:Landroid/hardware/camera2/CameraCharacteristics$Key;
++
++    invoke-virtual {p1, v1}, Landroid/hardware/camera2/CameraCharacteristics;->get(Landroid/hardware/camera2/CameraCharacteristics$Key;)Ljava/lang/Object;
++
++    move-result-object v1
++
++    check-cast v1, Landroid/graphics/Rect;
++
++    if-eqz v1, :cond_4
++
++    invoke-virtual {v1}, Landroid/graphics/Rect;->width()I
++
++    move-result v3
++
++    shl-int/lit8 v3, v3, 0x1
++
++    invoke-virtual {v1}, Landroid/graphics/Rect;->height()I
++
++    move-result v4
++
++    shl-int/lit8 v4, v4, 0x1
++
++    new-instance v0, Landroid/util/Size;
++
++    invoke-direct {v0, v3, v4}, Landroid/util/Size;-><init>(II)V
++
++    invoke-virtual {v2, v0}, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
++
++    new-instance p1, Lcom/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl;
++
++    check-cast v2, Ljava/lang/Iterable;
++
++    invoke-static {v2}, Lkotlin/collections/CollectionsKt;->toHashSet(Ljava/lang/Iterable;)Ljava/util/HashSet;
++
++    move-result-object v0
++
++    check-cast v0, Ljava/util/Set;
++
++    invoke-direct {p1, p0, v0}, Lcom/oneplus/camera/hardware/camera2/wrappers/OPFullPictureSizeCameraImpl;-><init>(Lcom/oneplus/camera/next/hardware/camera2/Camera2;Ljava/util/Set;)V
++
++    return-object p1
++
++    :cond_4
++    const/4 v0, 0x0
++
+     return-object v0
+ .end method
+ 
