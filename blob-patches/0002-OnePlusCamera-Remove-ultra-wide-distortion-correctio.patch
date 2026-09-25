@@ -1,0 +1,45 @@
+From b1dc0cb7e4c8ae09ba3033e79f40bcff7b2b65fc Mon Sep 17 00:00:00 2001
+From: lostsignal-502 <viaan4542@gmail.com>
+Date: Fri, 25 Sep 2026 15:52:08 +0000
+Subject: [PATCH] OnePlusCamera: Remove ultra wide distortion correction option
+
+With distortion correction enabled the HAL never switches the logical
+camera to the ultra wide sensor, so 0.6x only zooms out the main lens.
+Always keep distortion correction off and drop the settings toggle.
+---
+ res/xml/settings.xml                                    | 1 -
+ smali/com/oneplus/camera/hardware/OPCameraManager.smali | 6 +-----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/res/xml/settings.xml b/res/xml/settings.xml
+index 02833770..b6631e25 100644
+--- a/res/xml/settings.xml
++++ b/res/xml/settings.xml
+@@ -18,7 +18,6 @@
+     </PreferenceCategory>
+     <PreferenceCategory android:title="@string/settings_general" android:key="General">
+         <Preference android:title="@string/settings_custom_modes_title" android:key="CustomModes" android:summary="@string/settings_custom_modes_summary" />
+-        <SwitchPreference android:title="@string/settings_wide_lens_distortion_correction" android:key="IsDistortionCorrectionEnabled" android:defaultValue="true" />
+         <ListPreference android:entries="@array/settings_grid_list_preference" android:title="@string/settings_grid" android:key="@string/settings_key_grid" android:summary="%s" android:defaultValue="NONE" android:entryValues="@array/settings_grid_list_preference_values" />
+         <PreferenceScreen android:title="@string/settings_watermark_title" android:key="WatermarkPreferenceScreen">
+             <intent android:targetPackage="com.oneplus.camera" android:targetClass="com.oneplus.camera.settings.WatermarkActivity" />
+diff --git a/smali/com/oneplus/camera/hardware/OPCameraManager.smali b/smali/com/oneplus/camera/hardware/OPCameraManager.smali
+index a6be945f..442ef9fd 100644
+--- a/smali/com/oneplus/camera/hardware/OPCameraManager.smali
++++ b/smali/com/oneplus/camera/hardware/OPCameraManager.smali
+@@ -483,14 +483,10 @@
+ 
+     move-result-object v0
+ 
+-    const-string v1, "IsDistortionCorrectionEnabled"
+-
+     const/4 v2, 0x1
+ 
+     .line 153
+-    invoke-virtual {v0, v1, v2}, Lcom/oneplus/camera/CameraSettings;->getBoolean(Ljava/lang/String;Z)Z
+-
+-    move-result v1
++    const/4 v1, 0x0
+ 
+     const-string v3, "IsPictureMirrorEnabled"
+ 
