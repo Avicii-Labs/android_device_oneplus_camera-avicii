@@ -23,4 +23,5 @@ vendor.runtime.fastcv.log                u:object_r:exported_system_prop:s0
 
 # Logging
 persist.al.cfr.loglevel                  u:object_r:exported_system_prop:s0
+persist.sys.camera.log.scene             u:object_r:exported_system_prop:s0
 persist.sys.log.                         u:object_r:exported_system_prop:s0
